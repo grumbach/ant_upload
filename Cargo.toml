@@ -1,0 +1,9 @@
+[package]
+name = "ant_upload"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+eframe = "0.24.0"
+egui = "0.24.0"
+tokio = { version = "1.39.0", features = ["full"] }
