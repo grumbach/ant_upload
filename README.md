@@ -13,6 +13,21 @@ Liberate the world's knowledge — give it back to everyone
 ## Build it
 
 ```bash
+# currently uses the bleeding edge of the autonomi API which will eventually be released but for avant-garde users here's a how to guide
+
+# go back one directory out of the ant-upload directory
+cd .. 
+
+# clone the autonomi repo and use the client-light-networking branch
+git clone https://github.com/autonomi/autonomi.git 
+cd autonomi
+git fetch origin client-light-networking 
+git checkout client-light-networking
+
+# go back into the ant-upload directory
+cd ../ant-upload 
+
+# build the release version of the app
 cargo build --release
 ```
 
@@ -22,8 +37,14 @@ cargo build --release
 cargo run --release
 ```
 
+## For those diving into the code
+
+- The `src/server.rs` file contains the main logic for all autonomi network interaction
+- The `src/main.rs` 90% AI vibe-coded front-end for the app
+
 ## Coming soon
 
+- Use the public Autonomi API release instead of the bleeding edge client-light-networking branch
 - Proper binary releases
 - Download files from the Autonomi Network
 - A repository of all shared files
