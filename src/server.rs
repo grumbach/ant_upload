@@ -54,27 +54,13 @@ impl Server {
 }
 
 async fn init_client(environment: &str) -> Result<Client, String> {
-    match environment {
-        "local" => Client::init_local().await.map_err(|e| {
-            println!("Error initializing client: {e}");
-            format!("Error initializing client: {e}")
-        }),
-        "alpha" => {
-            Client::init_alpha()
-                .await
-                .map_err(|e| {
-                    println!("Error initializing client: {e}");
-                    format!("Error initializing client: {e}")
-                })
-        }
-        // "autonomi"
-        _ => {
-            Client::init()
-            .await
-            .map_err(|e| {
-                println!("Error initializing client: {e}");
-                format!("Error initializing client: {e}")
-            })
-        }
-    }
+    let res = match environment {
+        "local" => Client::init_local().await,
+        "alpha" => Client::init_alpha().await,
+        _ => Client::init().await, // "autonomi"
+    };
+    res.map_err(|e| {
+        println!("Error initializing client: {e}");
+        format!("Error initializing client: {e}")
+    })
 }
