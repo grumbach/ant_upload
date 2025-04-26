@@ -1,8 +1,8 @@
 # Ant Upload
 
-Share your files with the world — one drag and drop to eternal access. 
+Share your files with the world — one drag and drop to eternal access.
 
-Censorship-proof, universally available, and free for everyone. 
+Censorship-proof, universally available, and free for everyone.
 
 Pay once to upload — downloads stay free forever.
 
@@ -19,7 +19,7 @@ Liberate the world's knowledge — give it back to everyone
 cd .. 
 
 # clone the autonomi repo and use the client-light-networking branch
-git clone https://github.com/autonomi/autonomi.git 
+git clone https://github.com/maidsafe/autonomi.git 
 cd autonomi
 git fetch origin client-light-networking 
 git checkout client-light-networking
