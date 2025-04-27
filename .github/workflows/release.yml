@@ -5,18 +5,22 @@ on:
     branches: [main]
 
 jobs:
-  release:
+  linux-release:
     if: contains(github.event.head_commit.message, '[release]')
+    name: Build Linux targets
     runs-on: ubuntu-latest
-
+    strategy:
+      matrix:
+        target: [x86_64-unknown-linux-gnu, aarch64-unknown-linux-gnu]
     steps:
       - uses: actions/checkout@v4
-
-      - uses: actions-rs/toolchain@v1
+      
+      - name: Install Rust toolchain
+        uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
+          target: ${{ matrix.target }}
           override: true
-          targets: x86_64-apple-darwin, aarch64-apple-darwin, x86_64-unknown-linux-gnu, aarch64-unknown-linux-gnu
 
       - name: Clone autonomi dependency
         run: |
@@ -26,16 +30,79 @@ jobs:
           git checkout client-light-networking
           cd ..
 
-      - name: Install cross
-        run: cargo install cross
+      - name: Build
+        uses: actions-rs/cargo@v1
+        with:
+          command: build
+          args: --release --target ${{ matrix.target }}
 
-      - name: Build binaries
+  macos-release:
+    if: contains(github.event.head_commit.message, '[release]')
+    name: Build MacOS targets
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        target: [x86_64-apple-darwin, aarch64-apple-darwin]
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install Rust toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          target: ${{ matrix.target }}
+          override: true
+
+      - name: Clone autonomi dependency
         run: |
-          cross build --release --target x86_64-unknown-linux-gnu
-          cross build --release --target aarch64-unknown-linux-gnu
-          cross build --release --target x86_64-apple-darwin
-          cross build --release --target aarch64-apple-darwin
+          git clone https://github.com/maidsafe/autonomi.git
+          cd autonomi
+          git fetch origin client-light-networking
+          git checkout client-light-networking
+          cd ..
 
+      - name: Build
+        uses: actions-rs/cargo@v1
+        with:
+          command: build
+          args: --release --target ${{ matrix.target }}
+
+  windows-release:
+    if: contains(github.event.head_commit.message, '[release]')
+    name: Build Windows targets
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        target: [x86_64-pc-windows-msvc]
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install Rust toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          target: ${{ matrix.target }}
+          override: true
+
+      - name: Clone autonomi dependency
+        run: |
+          git clone https://github.com/maidsafe/autonomi.git
+          cd autonomi
+          git fetch origin client-light-networking
+          git checkout client-light-networking
+          cd ..
+
+      - name: Build
+        uses: actions-rs/cargo@v1
+        with:
+          command: build
+          args: --release --target ${{ matrix.target }}
+
+  create-release:
+    name: Create Release
+    needs: [linux-release, macos-release, windows-release]
+    runs-on: ubuntu-latest
+    steps:
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
@@ -44,3 +111,4 @@ jobs:
             target/aarch64-unknown-linux-gnu/release/ant_upload
             target/x86_64-apple-darwin/release/ant_upload
             target/aarch64-apple-darwin/release/ant_upload
+            target/x86_64-pc-windows-msvc/release/ant_upload.exe
