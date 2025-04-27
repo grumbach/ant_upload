@@ -4,6 +4,9 @@ on:
   push:
     branches: [main]
 
+permissions:
+  contents: write
+
 jobs:
   linux-release:
     if: contains(github.event.head_commit.message, '[release]')
@@ -52,6 +55,12 @@ jobs:
         if: matrix.target == 'aarch64-unknown-linux-musl'
         run: cross build --release --target ${{ matrix.target }}
 
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.target }}
+          path: target/${{ matrix.target }}/release/ant_upload
+
   macos-release:
     if: contains(github.event.head_commit.message, '[release]')
     name: Build MacOS targets
@@ -83,16 +92,45 @@ jobs:
           command: build
           args: --release --target ${{ matrix.target }}
 
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.target }}
+          path: target/${{ matrix.target }}/release/ant_upload
+
   create-release:
     name: Create Release
     needs: [linux-release, macos-release]
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+      
+      - name: Download all workflow run artifacts
+        uses: actions/download-artifact@v4
+
+      - name: Generate release tag
+        id: tag
+        run: |
+          echo "tag_name=$(date +'v%Y.%m.%d')" >> $GITHUB_OUTPUT
+          echo "release_name=Release $(date +'%Y.%m.%d')" >> $GITHUB_OUTPUT
+
       - name: Create Release
         uses: softprops/action-gh-release@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
+          tag_name: ${{ steps.tag.outputs.tag_name }}
+          name: ${{ steps.tag.outputs.release_name }}
+          body: |
+            Automated release from main branch
+            
+            Built targets:
+            - Linux (x86_64, aarch64)
+            - MacOS (x86_64, aarch64)
+          draft: false
+          prerelease: false
           files: |
-            target/x86_64-unknown-linux-musl/release/ant_upload
-            target/aarch64-unknown-linux-musl/release/ant_upload
-            target/x86_64-apple-darwin/release/ant_upload
-            target/aarch64-apple-darwin/release/ant_upload
+            x86_64-unknown-linux-musl/ant_upload
+            aarch64-unknown-linux-musl/ant_upload
+            x86_64-apple-darwin/ant_upload
+            aarch64-apple-darwin/ant_upload

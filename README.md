@@ -8,7 +8,7 @@ Pay once to upload — downloads stay free forever.
 
 Liberate the world's knowledge — give it back to everyone
 
-![Ant Upload](./ant_upload.gif)
+![Ant Upload](./assets/ant_upload.gif)
 
 ## Build it
 
