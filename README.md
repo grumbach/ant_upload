@@ -12,9 +12,12 @@ Liberate the world's knowledge — give it back to everyone
 
 ## Download it
 
-[Download the latest release](https://github.com/maidsafe/ant-upload/releases/latest)
+[Download the latest release](https://github.com/grumbach/ant_upload/releases/latest)
 
 > Mac users might face quarantine issues: `"AntUpload.app" is damaged and can't be opened. You should move it to the Trash.`
+>
+> This happens because I don't have a $99 a year Apple Developer account :(
+>
 > To fix this:
 > 1. **Unzip** the file (double-click the `.zip`).
 > 2. Open **Terminal** (press `Cmd + Space`, type "Terminal", and press Enter).
