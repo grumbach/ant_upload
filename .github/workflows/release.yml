@@ -98,12 +98,15 @@ jobs:
           command: build
           args: --release --target ${{ matrix.target }}
 
+      - name: Set executable permissions
+        run: |
+          chmod +x target/${{ matrix.target }}/release/ant_upload
+
       - name: Create .app bundle
         run: |
           chmod +x ./assets/mac_os_bundle.sh
           BINARY_PATH="./target/${{ matrix.target }}/release/ant_upload" ./assets/mac_os_bundle.sh
-          # Create a zip of the .app bundle
-          zip -r AntUpload-${{ matrix.target }}.zip AntUpload.app
+          ditto -c -k --keepParent AntUpload.app AntUpload-${{ matrix.target }}.zip
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
