@@ -5,7 +5,7 @@ edition = "2024"
 
 [dependencies]
 # autonomi = "0.4.4"
-autonomi = { path = "../autonomi/autonomi" }
+autonomi = { path = "autonomi/autonomi" }
 eframe = "0.24.0"
 egui = "0.24.0"
 tokio = { version = "1.39.0", features = ["full"] }

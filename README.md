@@ -15,9 +15,6 @@ Liberate the world's knowledge — give it back to everyone
 ```bash
 # currently uses the bleeding edge of the autonomi API which will eventually be released but for avant-garde users here's a how to guide
 
-# go back one directory out of the ant-upload directory
-cd .. 
-
 # clone the autonomi repo and use the client-light-networking branch
 git clone https://github.com/maidsafe/autonomi.git 
 cd autonomi
@@ -25,7 +22,7 @@ git fetch origin client-light-networking
 git checkout client-light-networking
 
 # go back into the ant-upload directory
-cd ../ant-upload 
+cd ..
 
 # build the release version of the app
 cargo build --release

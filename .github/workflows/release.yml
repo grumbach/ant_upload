@@ -1,0 +1,46 @@
+name: Release on Main Commit
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  release:
+    if: contains(github.event.head_commit.message, '[release]')
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+          targets: x86_64-apple-darwin, aarch64-apple-darwin, x86_64-unknown-linux-gnu, aarch64-unknown-linux-gnu
+
+      - name: Clone autonomi dependency
+        run: |
+          git clone https://github.com/maidsafe/autonomi.git
+          cd autonomi
+          git fetch origin client-light-networking
+          git checkout client-light-networking
+          cd ..
+
+      - name: Install cross
+        run: cargo install cross
+
+      - name: Build binaries
+        run: |
+          cross build --release --target x86_64-unknown-linux-gnu
+          cross build --release --target aarch64-unknown-linux-gnu
+          cross build --release --target x86_64-apple-darwin
+          cross build --release --target aarch64-apple-darwin
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            target/x86_64-unknown-linux-gnu/release/ant_upload
+            target/aarch64-unknown-linux-gnu/release/ant_upload
+            target/x86_64-apple-darwin/release/ant_upload
+            target/aarch64-apple-darwin/release/ant_upload
