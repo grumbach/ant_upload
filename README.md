@@ -19,7 +19,7 @@ Liberate the world's knowledge — give it back to everyone
 cd .. 
 
 # clone the autonomi repo and use the client-light-networking branch
-git clone https://github.com/autonomi/autonomi.git 
+git clone https://github.com/maidsafe/autonomi.git 
 cd autonomi
 git fetch origin client-light-networking 
 git checkout client-light-networking
