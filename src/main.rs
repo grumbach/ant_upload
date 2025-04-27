@@ -67,14 +67,6 @@ impl Default for UploadApp {
     }
 }
 
-pub fn verify_passcode(passcode: &str) -> Result<String, String> {
-    if passcode == "no" {
-        Err("Invalid passcode".to_string())
-    } else {
-        Ok(format!("Hash of {}", passcode))
-    }
-}
-
 impl UploadApp {
     // Add a helper method to check if there are active uploads
     fn has_active_uploads(&self) -> bool {

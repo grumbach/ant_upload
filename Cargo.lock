@@ -959,7 +959,6 @@ name = "ant_upload"
 version = "0.1.0"
 dependencies = [
  "autonomi",
- "color-eyre",
  "eframe",
  "egui",
  "tokio",
