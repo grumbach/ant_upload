@@ -1,8 +1,8 @@
 # Ant Upload
 
-Share your files with the world — one drag and drop to eternal access. 
+Share your files with the world — one drag and drop to eternal access.
 
-Censorship-proof, universally available, and free for everyone. 
+Censorship-proof, universally available, and free for everyone.
 
 Pay once to upload — downloads stay free forever.
 
