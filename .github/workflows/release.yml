@@ -4,6 +4,9 @@ on:
   push:
     branches: [main]
 
+permissions:
+  contents: write
+
 jobs:
   linux-release:
     if: contains(github.event.head_commit.message, '[release]')
@@ -52,6 +55,18 @@ jobs:
         if: matrix.target == 'aarch64-unknown-linux-musl'
         run: cross build --release --target ${{ matrix.target }}
 
+      - name: Package binary
+        run: |
+          cd target/${{ matrix.target }}/release
+          zip AntUpload-${{ matrix.target }}.zip ant_upload
+          cd ../../..
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.target }}
+          path: target/${{ matrix.target }}/release/AntUpload-${{ matrix.target }}.zip
+
   macos-release:
     if: contains(github.event.head_commit.message, '[release]')
     name: Build MacOS targets
@@ -83,16 +98,72 @@ jobs:
           command: build
           args: --release --target ${{ matrix.target }}
 
+      - name: Create .app bundle
+        run: |
+          chmod +x ./assets/mac_os_bundle.sh
+          BINARY_PATH="./target/${{ matrix.target }}/release/ant_upload" ./assets/mac_os_bundle.sh
+          # Create a zip of the .app bundle
+          zip -r AntUpload-${{ matrix.target }}.zip AntUpload.app
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.target }}
+          path: AntUpload-${{ matrix.target }}.zip
+
   create-release:
     name: Create Release
     needs: [linux-release, macos-release]
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # This fetches all history and tags
+
+      - name: Download all workflow run artifacts
+        uses: actions/download-artifact@v4
+
+      - name: List files
+        run: |
+          pwd
+          ls -R
+
+      - name: Generate release tag
+        id: tag
+        run: |
+          # Get the latest tag, default to v0.1.0 if none exists
+          git fetch --tags
+          latest_tag=$(git tag -l 'v*' | sort -V | tail -n 1)
+          if [ -z "$latest_tag" ]; then
+            latest_tag="v0.1.0"
+          fi
+          
+          # Remove the 'v' prefix and increment the patch version
+          version=${latest_tag#v}
+          IFS='.' read -r major minor patch <<< "$version"
+          new_patch=$((patch + 1))
+          new_tag="v$major.$minor.$new_patch"
+          
+          echo "tag_name=$new_tag" >> $GITHUB_OUTPUT
+          echo "release_name=Release $new_tag" >> $GITHUB_OUTPUT
+
       - name: Create Release
         uses: softprops/action-gh-release@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
+          tag_name: ${{ steps.tag.outputs.tag_name }}
+          name: ${{ steps.tag.outputs.release_name }}
+          body: |
+            Automated release from main branch
+            
+            Built targets:
+            - Linux (x86_64, aarch64)
+            - MacOS (x86_64, aarch64)
+          draft: false
+          prerelease: false
           files: |
-            target/x86_64-unknown-linux-musl/release/ant_upload
-            target/aarch64-unknown-linux-musl/release/ant_upload
-            target/x86_64-apple-darwin/release/ant_upload
-            target/aarch64-apple-darwin/release/ant_upload
+            x86_64-unknown-linux-musl/AntUpload-x86_64-unknown-linux-musl.zip
+            aarch64-unknown-linux-musl/AntUpload-aarch64-unknown-linux-musl.zip
+            x86_64-apple-darwin/AntUpload-x86_64-apple-darwin.zip
+            aarch64-apple-darwin/AntUpload-aarch64-apple-darwin.zip
