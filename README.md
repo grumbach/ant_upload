@@ -12,7 +12,25 @@ Liberate the world's knowledge — give it back to everyone
 
 ## Download it
 
-[Download the latest release](https://github.com/grumbach/ant_upload/releases/latest)
+[Download the latest release on github with a click!](https://github.com/grumbach/ant_upload/releases/latest) 
+
+Or download directly from the Autonomi Network:
+
+```bash
+# macOS aarch64
+ant file download 4fcf9ee03171630aae2f328c47e942962a0ed58431cd60ee74a9161355e270d5 AntUpload-aarch64-apple-darwin.zip 
+
+# Linux aarch64
+ant file download 1db1542e7f5d57da5a40040a026832f33f4efa2ab2fd0326760dac0a5fd86632 AntUpload-aarch64-unknown-linux-musl.zip
+
+# macOS x86_64 
+ant file download 0dcad65bf1cdf3b26fe3415d51abd95bea60343ca9c5e02b7c0be576b11e94ca AntUpload-x86_64-apple-darwin.zip
+
+# Linux x86_64
+ant file download 4ddf28c5bd0a652587e6c812edb260a92c0b5011c0d1f2ff7eca628160775c8c AntUpload-x86_64-unknown-linux-musl.zip
+```
+
+*AntUpload was uploaded to the Network using AntUpload!*
 
 > Mac users might face quarantine issues: `"AntUpload.app" is damaged and can't be opened. You should move it to the Trash.`
 >
