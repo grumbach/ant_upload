@@ -464,6 +464,7 @@ impl eframe::App for UploadApp {
 #[tokio::main]
 async fn main() -> eframe::Result<()> {
     let options = eframe::NativeOptions {
+        viewport: egui::ViewportBuilder::default().with_icon(load_icon()),
         ..Default::default()
     };
 
@@ -472,4 +473,18 @@ async fn main() -> eframe::Result<()> {
         options,
         Box::new(|_cc| Box::new(UploadApp::default())),
     )
+}
+
+fn load_icon() -> egui::IconData {
+    let image_bytes = include_bytes!("../assets/ant_up.png");
+    let decoded = image::load_from_memory(image_bytes)
+        .expect("Failed to load PNG")
+        .into_rgba8();
+    let rgba_bytes = decoded.into_raw();
+
+    egui::IconData {
+        rgba: rgba_bytes.to_vec(),
+        width: 1024,
+        height: 1024,
+    }
 }

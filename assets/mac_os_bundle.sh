@@ -1,9 +1,19 @@
 #!/bin/bash
 
-# Set your app name and binary path
-# BINARY_PATH="./target/release/ant_upload"  # adjust this path to your binary
+# Script to create a mac os bundle for the ant_upload binary
+#
+# BINARY_PATH is the path to the binary to be bundled, it can be provided as an environment variable:
+#
+# BINARY_PATH=./target/release/ant_upload ./mac_os_bundle.sh
+#
+# If the desired binary path is not provided, the default path will be used
+
 APP_NAME="AntUpload"
 ICON_PATH="./assets/ant_up.icns"
+
+if [ -z "$BINARY_PATH" ]; then
+    BINARY_PATH="./target/release/ant_upload"  # this one is the default path
+fi
 
 # Create the .app structure
 mkdir -p "${APP_NAME}.app/Contents/MacOS"
