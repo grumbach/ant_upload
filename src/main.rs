@@ -1,3 +1,4 @@
+pub mod cached_payments;
 mod server;
 
 use server::DEFAULT_ENVIRONMENT;
@@ -427,7 +428,7 @@ impl eframe::App for UploadApp {
                                 // Spawn async upload task
                                 tokio::spawn(async move {
                                     let start_time = std::time::Instant::now();
-                                    match server_clone.put_data(&bytes).await {
+                                    match server_clone.put_data(&bytes, &filename).await {
                                         Ok((address, cost)) => {
                                             let _ = status_sender.send(UploadEvent::Complete {
                                                 index: status_index,

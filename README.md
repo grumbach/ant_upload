@@ -54,17 +54,20 @@ ant file download 4ddf28c5bd0a652587e6c812edb260a92c0b5011c0d1f2ff7eca628160775c
 ```bash
 # currently uses the bleeding edge of the autonomi API which will eventually be released but for avant-garde users here's a how to guide
 
-# clone the autonomi repo and use the client-light-networking branch
-git clone https://github.com/maidsafe/autonomi.git 
+# clone the autonomi repo and use the req_resp_record_put branch
+git clone https://github.com/grumbach/autonomi.git 
 cd autonomi
-git fetch origin client-light-networking 
-git checkout client-light-networking
+git fetch origin req_resp_record_put 
+git checkout req_resp_record_put
 
 # go back into the ant-upload directory
 cd ..
 
 # build the release version of the app
 cargo build --release
+
+# (for macOS) make a AntUpload.app
+bash ./assets/mac_os_bundle.sh
 ```
 
 ## Run it from source
@@ -77,10 +80,11 @@ cargo run --release
 
 - The `src/server.rs` file contains the main logic for all autonomi network interaction
 - The `src/main.rs` 90% AI vibe-coded front-end for the app
+- The `src/cached_payments.rs` file is copy pasted as is from the ant CLI, it allows re-use of payments for retries (which means it's cross compatible with ant CLI)
 
 ## Coming soon
 
-- Use the public Autonomi API release instead of the bleeding edge client-light-networking branch
+- Use the public Autonomi API release instead of the bleeding edge req_resp_record_put branch
 - Windows binary releases (need help here)
 - Download files from the Autonomi Network
 - A repository of all shared files

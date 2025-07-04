@@ -1,4 +1,4 @@
-use autonomi::{Bytes, Client, Wallet};
+use autonomi::{Bytes, Client, Wallet, client::payment::PaymentOption};
 
 pub const ENVIRONMENTS: [&str; 3] = ["local", "autonomi", "alpha"];
 pub const DEFAULT_ENVIRONMENT: &str = "alpha";
@@ -34,19 +34,35 @@ impl Server {
         Ok(Self { wallet, client })
     }
 
-    pub async fn put_data(&self, bytes: &[u8]) -> Result<(String, String), String> {
+    pub async fn put_data(&self, bytes: &[u8], filename: &str) -> Result<(String, String), String> {
         println!("Uploading {} bytes...", bytes.len());
 
-        let payment = self.wallet.clone().into();
+        // use existing payment if available (from previous failed attempt)
+        let wallet = self.wallet.clone();
+        let payment =
+            if let Ok(Some(receipt)) = crate::cached_payments::load_payment_for_file(filename) {
+                println!("Using cached payment: no need to re-pay");
+                PaymentOption::Receipt(receipt)
+            } else {
+                PaymentOption::Wallet(wallet)
+            };
+
+        // upload data
         let bytes = Bytes::from(bytes.to_vec());
-        let (price, addr) = self
-            .client
-            .data_put_public(bytes, payment)
-            .await
-            .map_err(|e| {
+        let (price, addr) = match self.client.data_put_public(bytes, payment).await {
+            Ok((price, addr)) => (price, addr),
+            // save payment to local disk for re-use if upload failed
+            Err(autonomi::client::PutError::Batch(upload_state)) => {
+                let res = crate::cached_payments::save_payment(filename, &upload_state);
+                println!("Error uploading data: {upload_state}");
+                println!("Cached payment to local disk for retry: {filename}: {res:?}");
+                return Err(format!("Error uploading data: {upload_state}"));
+            }
+            Err(e) => {
                 println!("Error uploading data: {e}");
-                format!("Error uploading data: {e}")
-            })?;
+                return Err(format!("Error uploading data: {e}"));
+            }
+        };
 
         println!("Upload complete with price: {price:?} at: {addr:?}");
         Ok((addr.to_hex(), price.to_string()))

@@ -38,10 +38,10 @@ jobs:
 
       - name: Clone autonomi dependency
         run: |
-          git clone https://github.com/maidsafe/autonomi.git
+          git clone https://github.com/grumbach/autonomi.git
           cd autonomi
-          git fetch origin client-light-networking
-          git checkout client-light-networking
+          git fetch origin req_resp_record_put
+          git checkout req_resp_record_put
           cd ..
 
       - name: Build x86_64
@@ -86,10 +86,10 @@ jobs:
 
       - name: Clone autonomi dependency
         run: |
-          git clone https://github.com/maidsafe/autonomi.git
+          git clone https://github.com/grumbach/autonomi.git
           cd autonomi
-          git fetch origin client-light-networking
-          git checkout client-light-networking
+          git fetch origin req_resp_record_put
+          git checkout req_resp_record_put
           cd ..
 
       - name: Build
