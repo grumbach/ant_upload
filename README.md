@@ -18,16 +18,16 @@ Or download directly from the Autonomi Network:
 
 ```bash
 # macOS aarch64
-ant file download 4fcf9ee03171630aae2f328c47e942962a0ed58431cd60ee74a9161355e270d5 AntUpload-aarch64-apple-darwin.zip 
+ant file download 86a59dabc6d2d0f9cb50c03859a39378ce59e5f2e849aee2094eff641b21d438 AntUpload-aarch64-apple-darwin.zip
 
 # Linux aarch64
-ant file download 1db1542e7f5d57da5a40040a026832f33f4efa2ab2fd0326760dac0a5fd86632 AntUpload-aarch64-unknown-linux-musl.zip
+ant file download 4b114c0749a5e24a8d5b3e6f6b60bd6ce245b635583cd8a200e10c5385d2b9d2 AntUpload-aarch64-unknown-linux-musl.zip
 
 # macOS x86_64 
-ant file download 0dcad65bf1cdf3b26fe3415d51abd95bea60343ca9c5e02b7c0be576b11e94ca AntUpload-x86_64-apple-darwin.zip
+ant file download 97725e3a9a65ca88a8975aa0d1f84d3d23a6cb7fa25c4861936574e0b180a217 AntUpload-x86_64-apple-darwin.zip
 
 # Linux x86_64
-ant file download 4ddf28c5bd0a652587e6c812edb260a92c0b5011c0d1f2ff7eca628160775c8c AntUpload-x86_64-unknown-linux-musl.zip
+ant file download bf027cf6a05358c7731b8b1d18be5f7105005cfdd89881d327bd2e3b4a3d11d5 AntUpload-x86_64-unknown-linux-musl.zip
 ```
 
 *AntUpload was uploaded to the Network using AntUpload!*
