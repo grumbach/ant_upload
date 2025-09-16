@@ -125,18 +125,17 @@ fn now() -> String {
 }
 
 fn get_timestamp_from_receipt(receipt: &Receipt) -> String {
-    if let Some((proof, _)) = receipt.values().next() {
-        if let Some(timestamp) = proof
+    if let Some((proof, _)) = receipt.values().next()
+        && let Some(timestamp) = proof
             .peer_quotes
             .first()
             .map(|(_, _, quote)| quote.timestamp)
-        {
-            return timestamp
-                .duration_since(UNIX_EPOCH)
-                .unwrap_or_default()
-                .as_secs()
-                .to_string();
-        }
+    {
+        return timestamp
+            .duration_since(UNIX_EPOCH)
+            .unwrap_or_default()
+            .as_secs()
+            .to_string();
     }
 
     now()

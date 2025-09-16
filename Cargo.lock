@@ -911,8 +911,9 @@ dependencies = [
 
 [[package]]
 name = "ant-bootstrap"
-version = "0.2.4"
-source = "git+https://github.com/grumbach/autonomi?branch=req_resp_record_put#be75bc37a97cccdc4c389fa558a8faee88b931ae"
+version = "0.2.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "fd4a454ce3048998f4d5a23a16b2f7443b838d880dea64a30b9b8e51adc07c4e"
 dependencies = [
  "ant-logging",
  "ant-protocol",
@@ -922,6 +923,7 @@ dependencies = [
  "dirs-next",
  "futures",
  "libp2p",
+ "rand 0.8.5",
  "reqwest",
  "serde",
  "serde_json",
@@ -933,8 +935,9 @@ dependencies = [
 
 [[package]]
 name = "ant-build-info"
-version = "0.1.28"
-source = "git+https://github.com/grumbach/autonomi?branch=req_resp_record_put#be75bc37a97cccdc4c389fa558a8faee88b931ae"
+version = "0.1.29"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2b6954a9d1c42c19ff90fd59ace0e89e966b06d901d45a5a7f0e66a37b083e2b"
 dependencies = [
  "chrono",
  "tracing",
@@ -943,8 +946,9 @@ dependencies = [
 
 [[package]]
 name = "ant-evm"
-version = "0.1.15"
-source = "git+https://github.com/grumbach/autonomi?branch=req_resp_record_put#be75bc37a97cccdc4c389fa558a8faee88b931ae"
+version = "0.1.17"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "75d8dbfe2dcb023fdbd030a0847ea2e76fd879279bd5bfead4ee7d1e9b230c6a"
 dependencies = [
  "custom_debug",
  "evmlib",
@@ -964,8 +968,9 @@ dependencies = [
 
 [[package]]
 name = "ant-logging"
-version = "0.2.50"
-source = "git+https://github.com/grumbach/autonomi?branch=req_resp_record_put#be75bc37a97cccdc4c389fa558a8faee88b931ae"
+version = "0.2.52"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9c2237f602d7cdffbf55afaa13c9149c739a36082e712c8bb78b6670f4d101e7"
 dependencies = [
  "chrono",
  "dirs-next",
@@ -981,8 +986,9 @@ dependencies = [
 
 [[package]]
 name = "ant-protocol"
-version = "1.0.6"
-source = "git+https://github.com/grumbach/autonomi?branch=req_resp_record_put#be75bc37a97cccdc4c389fa558a8faee88b931ae"
+version = "1.0.8"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "322f622cc8729dc13c3919de099dd2799add870b14f356068eee800487d1a9b9"
 dependencies = [
  "ant-build-info",
  "ant-evm",
@@ -1544,8 +1550,9 @@ checksum = "c08606f8c3cbf4ce6ec8e28fb0014a2c086708fe954eaa885384a6165172e7e8"
 
 [[package]]
 name = "autonomi"
-version = "0.5.0"
-source = "git+https://github.com/grumbach/autonomi?branch=req_resp_record_put#be75bc37a97cccdc4c389fa558a8faee88b931ae"
+version = "0.6.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a99d50fc883d1d808cf7d202e5e0ff282ee8921570a46c21a3574e1aa7b8da30"
 dependencies = [
  "ant-bootstrap",
  "ant-evm",
@@ -1557,6 +1564,7 @@ dependencies = [
  "bytes",
  "const-hex",
  "custom_debug",
+ "dirs-next",
  "evmlib",
  "exponential-backoff",
  "eyre",
@@ -1566,7 +1574,8 @@ dependencies = [
  "rand 0.8.5",
  "rayon",
  "rmp-serde",
- "self_encryption",
+ "self_encryption 0.30.0",
+ "self_encryption 0.33.0",
  "serde",
  "sha2",
  "thiserror 1.0.69",
@@ -3041,11 +3050,11 @@ dependencies = [
 
 [[package]]
 name = "evmlib"
-version = "0.4.1"
-source = "git+https://github.com/grumbach/autonomi?branch=req_resp_record_put#be75bc37a97cccdc4c389fa558a8faee88b931ae"
+version = "0.4.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c8a234edf43b74429ee3d3fbedb309d0e33105f7ccab8f47d0b1ac3414135960"
 dependencies = [
  "alloy",
- "dirs-next",
  "rand 0.8.5",
  "serde",
  "serde_with",
@@ -7007,6 +7016,28 @@ dependencies = [
  "tempfile",
  "thiserror 1.0.69",
  "tiny-keccak",
+ "tokio",
+ "xor_name",
+]
+
+[[package]]
+name = "self_encryption"
+version = "0.33.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7a8e2c013b012d3d8533d78ef297c81f0442c26592cfbf6878fea35dff4a3404"
+dependencies = [
+ "aes",
+ "bincode",
+ "brotli",
+ "bytes",
+ "cbc",
+ "hex",
+ "rand 0.8.5",
+ "rand_chacha 0.3.1",
+ "rayon",
+ "serde",
+ "tempfile",
+ "thiserror 1.0.69",
  "tokio",
  "xor_name",
 ]

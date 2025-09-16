@@ -1,7 +1,7 @@
 use autonomi::{Bytes, Client, Wallet, client::payment::PaymentOption};
 
 pub const ENVIRONMENTS: [&str; 3] = ["local", "autonomi", "alpha"];
-pub const DEFAULT_ENVIRONMENT: &str = "alpha";
+pub const DEFAULT_ENVIRONMENT: &str = "autonomi";
 pub const DEFAULT_LOCAL_SECRET_KEY: &str =
     "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80";
 

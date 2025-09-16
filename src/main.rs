@@ -156,21 +156,20 @@ impl eframe::App for UploadApp {
                             ui.label(egui::RichText::new("Please enter a valid EVM hex encoded private key. Your Secret Key is used solely for local transaction signing and is NEVER stored, transmitted, or persisted. The key exists ONLY in memory until the app is closed. You must own ANT and some ETH to upload data. Stop reading and start uploading!").size(10.0));
 
                             // Check for server init result
-                            if let Some(receiver) = &mut self.server_init_receiver {
-                                if let Ok(result) = receiver.try_recv() {
-                                    self.is_connecting = false;
-                                    self.server_init_receiver = None;
+                            if let Some(receiver) = &mut self.server_init_receiver
+                                && let Ok(result) = receiver.try_recv() {
+                                self.is_connecting = false;
+                                self.server_init_receiver = None;
 
-                                    match result {
-                                        Ok(server) => {
-                                            self.server = Some(server);
-                                            self.passcode_confirmed = true;
-                                            self.error_message = None;
-                                        }
-                                        Err(error) => {
-                                            self.error_message = Some(error);
-                                            self.passcode.clear();
-                                        }
+                                match result {
+                                    Ok(server) => {
+                                        self.server = Some(server);
+                                        self.passcode_confirmed = true;
+                                        self.error_message = None;
+                                    }
+                                    Err(error) => {
+                                        self.error_message = Some(error);
+                                        self.passcode.clear();
                                     }
                                 }
                             }
@@ -379,15 +378,13 @@ impl eframe::App for UploadApp {
                             );
 
                             // Only show copy button for completed successful uploads with an address
-                            if status.completed && status.success == Some(true) {
-                                if let Some(address) = status.message.split("At address: ").nth(1) {
-                                    if !address.trim().is_empty() && ui.small_button("📋").clicked()
-                                    {
-                                        ui.output_mut(|o| {
-                                            o.copied_text = address.trim().to_string()
-                                        });
-                                    }
-                                }
+                            if status.completed
+                                && status.success == Some(true)
+                                && let Some(address) = status.message.split("At address: ").nth(1)
+                                && !address.trim().is_empty()
+                                && ui.small_button("📋").clicked()
+                            {
+                                ui.output_mut(|o| o.copied_text = address.trim().to_string());
                             }
                         });
                     }

@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-autonomi = { git = "https://github.com/grumbach/autonomi", branch = "req_resp_record_put", features = ["loud"] }
+autonomi = { version = "0.6.0", features = ["loud"] }
 eframe = "0.24.0"
 egui = "0.24.0"
 image = "0.25.6"
