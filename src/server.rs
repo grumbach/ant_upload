@@ -1,4 +1,6 @@
-use autonomi::{Bytes, Client, Wallet, client::payment::PaymentOption};
+use std::path::PathBuf;
+
+use autonomi::{Client, Wallet, client::payment::PaymentOption};
 
 pub const ENVIRONMENTS: [&str; 3] = ["local", "autonomi", "alpha"];
 pub const DEFAULT_ENVIRONMENT: &str = "autonomi";
@@ -34,33 +36,45 @@ impl Server {
         Ok(Self { wallet, client })
     }
 
-    pub async fn put_data(&self, bytes: &[u8], filename: &str) -> Result<(String, String), String> {
-        println!("Uploading {} bytes...", bytes.len());
+    pub async fn put_file(&self, filename: &PathBuf) -> Result<(String, String), String> {
+        println!("Uploading {:?}...", filename);
 
         // use existing payment if available (from previous failed attempt)
         let wallet = self.wallet.clone();
-        let payment =
-            if let Ok(Some(receipt)) = crate::cached_payments::load_payment_for_file(filename) {
-                println!("Using cached payment: no need to re-pay");
-                PaymentOption::Receipt(receipt)
-            } else {
-                PaymentOption::Wallet(wallet)
-            };
+        let payment = if let Ok(Some(receipt)) =
+            crate::cached_payments::load_payment_for_file(&filename.to_string_lossy())
+        {
+            println!("Using cached payment: no need to re-pay");
+            PaymentOption::Receipt(receipt)
+        } else {
+            PaymentOption::Wallet(wallet)
+        };
 
-        // upload data
-        let bytes = Bytes::from(bytes.to_vec());
-        let (price, addr) = match self.client.data_put_public(bytes, payment).await {
+        // upload file
+        let (price, addr) = match self
+            .client
+            .file_content_upload_public(filename.clone(), payment)
+            .await
+        {
             Ok((price, addr)) => (price, addr),
             // save payment to local disk for re-use if upload failed
-            Err(autonomi::client::PutError::Batch(upload_state)) => {
-                let res = crate::cached_payments::save_payment(filename, &upload_state);
-                println!("Error uploading data: {upload_state}");
-                println!("Cached payment to local disk for retry: {filename}: {res:?}");
-                return Err(format!("Error uploading data: {upload_state}"));
+            Err(autonomi::client::files::UploadError::PutError(
+                autonomi::client::PutError::Batch(upload_state),
+            )) => {
+                let res = crate::cached_payments::save_payment(
+                    &filename.to_string_lossy(),
+                    &upload_state,
+                );
+                println!("Error uploading file: {upload_state}");
+                println!(
+                    "Cached payment to local disk for retry: {:?}: {res:?}",
+                    filename
+                );
+                return Err(format!("Error uploading file: {upload_state}"));
             }
             Err(e) => {
-                println!("Error uploading data: {e}");
-                return Err(format!("Error uploading data: {e}"));
+                println!("Error uploading file: {e}");
+                return Err(format!("Error uploading file: {e}"));
             }
         };
 

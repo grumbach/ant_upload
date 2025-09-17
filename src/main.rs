@@ -399,59 +399,44 @@ impl eframe::App for UploadApp {
                 // Process each dropped file
                 for file in &self.dropped_files {
                     if let Some(path) = &file.path {
-                        match std::fs::read(path) {
-                            Ok(bytes) => {
-                                let filename = path
-                                    .file_name()
-                                    .and_then(|n| n.to_str())
-                                    .unwrap_or("unknown")
-                                    .to_string();
+                        // Create new upload status
+                        self.upload_statuses.push(UploadStatus {
+                            filename: path.display().to_string(),
+                            start_time: std::time::Instant::now(),
+                            completed: false,
+                            success: None,
+                            message: format!("Uploading {}...", path.display()),
+                            time_to_complete: None,
+                        });
 
-                                // Create new upload status
-                                self.upload_statuses.push(UploadStatus {
-                                    filename: filename.clone(),
-                                    start_time: std::time::Instant::now(),
-                                    completed: false,
-                                    success: None,
-                                    message: format!("Uploading {}...", filename),
-                                    time_to_complete: None,
-                                });
+                        let status_index = self.upload_statuses.len() - 1;
+                        let status_sender = self.status_sender.clone();
+                        let path_clone = path.clone();
 
-                                let status_index = self.upload_statuses.len() - 1;
-                                let status_sender = self.status_sender.clone();
-                                let filename_clone = filename.clone();
-
-                                let server_clone = self.server.as_ref().unwrap().clone();
-                                // Spawn async upload task
-                                tokio::spawn(async move {
-                                    let start_time = std::time::Instant::now();
-                                    match server_clone.put_data(&bytes, &filename).await {
-                                        Ok((address, cost)) => {
-                                            let _ = status_sender.send(UploadEvent::Complete {
-                                                index: status_index,
-                                                address: address.clone(),
-                                                cost: cost.clone(),
-                                                duration: start_time.elapsed(),
-                                                filename: filename_clone,
-                                            });
-                                        }
-                                        Err(e) => {
-                                            let _ = status_sender.send(UploadEvent::Failed {
-                                                index: status_index,
-                                                filename: filename_clone,
-                                                duration: start_time.elapsed(),
-                                                error: e.to_string(),
-                                            });
-                                        }
-                                    }
-                                });
+                        let server_clone = self.server.as_ref().unwrap().clone();
+                        // Spawn async upload task
+                        tokio::spawn(async move {
+                            let start_time = std::time::Instant::now();
+                            match server_clone.put_file(&path_clone).await {
+                                Ok((address, cost)) => {
+                                    let _ = status_sender.send(UploadEvent::Complete {
+                                        index: status_index,
+                                        address: address.clone(),
+                                        cost: cost.clone(),
+                                        duration: start_time.elapsed(),
+                                        filename: path_clone.display().to_string(),
+                                    });
+                                }
+                                Err(e) => {
+                                    let _ = status_sender.send(UploadEvent::Failed {
+                                        index: status_index,
+                                        filename: path_clone.display().to_string(),
+                                        duration: start_time.elapsed(),
+                                        error: e.to_string(),
+                                    });
+                                }
                             }
-                            Err(e) => {
-                                println!("Error reading file {}: {e}", path.display());
-                                self.error_message =
-                                    Some(format!("Error reading file {}: {e}", path.display()));
-                            }
-                        }
+                        });
                     }
                 }
             }

@@ -40,8 +40,8 @@ jobs:
         run: |
           git clone https://github.com/grumbach/autonomi.git
           cd autonomi
-          git fetch origin req_resp_record_put
-          git checkout req_resp_record_put
+          git fetch origin make_missing_file_upload_api_stream
+          git checkout make_missing_file_upload_api_stream
           cd ..
 
       - name: Build x86_64
@@ -88,8 +88,8 @@ jobs:
         run: |
           git clone https://github.com/grumbach/autonomi.git
           cd autonomi
-          git fetch origin req_resp_record_put
-          git checkout req_resp_record_put
+          git fetch origin make_missing_file_upload_api_stream
+          git checkout make_missing_file_upload_api_stream
           cd ..
 
       - name: Build

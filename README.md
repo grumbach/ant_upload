@@ -54,11 +54,11 @@ ant file download bf027cf6a05358c7731b8b1d18be5f7105005cfdd89881d327bd2e3b4a3d11
 ```bash
 # currently uses the bleeding edge of the autonomi API which will eventually be released but for avant-garde users here's a how to guide
 
-# clone the autonomi repo and use the req_resp_record_put branch
+# clone the autonomi repo and use the make_missing_file_upload_api_stream branch
 git clone https://github.com/grumbach/autonomi.git 
 cd autonomi
-git fetch origin req_resp_record_put 
-git checkout req_resp_record_put
+git fetch origin make_missing_file_upload_api_stream 
+git checkout make_missing_file_upload_api_stream
 
 # go back into the ant-upload directory
 cd ..
@@ -84,7 +84,7 @@ cargo run --release
 
 ## Coming soon
 
-- Use the public Autonomi API release instead of the bleeding edge req_resp_record_put branch
+- Use the public Autonomi API release instead of the bleeding edge make_missing_file_upload_api_stream branch
 - Windows binary releases (need help here)
 - Download files from the Autonomi Network
 - A repository of all shared files
